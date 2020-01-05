@@ -47,7 +47,13 @@ function draw() {
     if (mouseIsPressed === true) { // Draw Action
 
         // Stroke Size
-        strokeWeight(3); 
+        strokeWeight(paintTools.strokeButton.getStrokeWeight()); 
+
+        // Paint Zone
+        if (mouseX > padding) {
+            // Line between previous and current point
+            line(mouseX, mouseY, pmouseX, pmouseY);
+        }
 
         // Select colour
         if (mouseButton === LEFT) {
@@ -56,15 +62,29 @@ function draw() {
         if (mouseButton === RIGHT) {
             stroke(paintTools.paintSelect[1].color);
         }
+    }
+}
 
-        // If inside paint area...
-        if (mouseX > padding) {
-            // Line between previous and current point
-            line(mouseX, mouseY, pmouseX, pmouseY);
+function mousePressed() {
+
+
+    // Paint Tools 
+    paintTools.pointInsidePaintChip(mouseX,mouseY); // Paint Chips
+    for (let i=0;i<paintTools.buttons.length;i++) {
+        if (paintTools.buttons[i].pointInsideButton()) {
+            paintTools.buttons[i].pushButton();
         }
+    }
+}
 
-        // Check if mouse is touching a paint chip (color swap)
-        paintTools.pointInsidePaintChip(mouseX,mouseY);
+function mouseReleased() {
+
+    for (let i=0;i<paintTools.buttons.length;i++) {
+        if (paintTools.buttons[i].pointInsideButton()) {
+            paintTools.buttons[i].releaseButton();
+        } else {
+            paintTools.buttons[i].cancelButton();
+        }
     }
 }
 
@@ -144,12 +164,46 @@ class PaintChip { // Palette square of colour
     }
 }
 
-class StrokeButton {
-    constructor(x,y) {
+class Button {
+    constructor(x,y,width,height) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
         this.pushed = false;
         this.mode = 0;
+        this.modesMax = 1;
+    }
+
+    pointInsideButton(x,y) {
+        // Stroke Button: Change Stroke Size
+        if (withinRect(x, y, this.x, this.y, this.width, this.height)) {
+                return true;
+        } else {
+            return false;
+        }
+    }
+    
+    pushButton() {
+        this.pushed = true;
+    }
+
+    releaseButton() {
+        cancelButton()
+        this.mode++;
+        if (this.mode > this.modesMax) {
+            this.mode = 0;
+        }
+    }
+
+    cancelButton() {
+        this.pushed = false;
+    }
+}
+
+class StrokeButton extends Button {
+    constructor(x,y,width,height) {
+        super(x,y,width,height);
         this.modesMax = 2;
         this.strokeWeights = [3,6,10];
     }
@@ -166,30 +220,8 @@ class StrokeButton {
         }
     }
 
-    pointInsideButton() {
-        // Stroke Button: Change Stroke Size
-        if (withinRect(x,y,this.x,this.y,this.width, this.height)) {
-                return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    pushButton() {
-        this.pushed = true;
-    }
-
-    releaseButton() {
-        cancelButton()
-        this.mode++;
-        if (this.mode > this.modesMax) {
-            this.mode = 0;
-        }
-    }
-
-    cancelButton() {
-        this.pushed = false;
+    getStrokeWeight() {
+        return this.strokeWeights[this.mode];
     }
 }
 
@@ -244,7 +276,9 @@ class PaintTools {
 
 
         // Buttons
-        this.strokeButton = new StrokeButton(x,y + this.PalChipsBottom + 8)
+        this.buttons = [];
+        this.strokeButton = new StrokeButton(x,y + this.PalChipsBottom + 8, stroke1.width, stroke1.height)
+        this.buttons.push(this.strokeButton);
     }
 
     drawTools() {
@@ -301,7 +335,8 @@ class PaintTools {
     }
 }
 
-withinRect(px, py, rx,ry,rw,rh) { // Check if a point is inside a rectangle
+// SUPPORT FUNCTIONS
+function withinRect(px, py, rx, ry, rw, rh) { // Check if a point is inside a rectangle
     if ((px >= rx) && (px <= rx+rw) && (py >= ry) && (py <= ry+rh)) {
         return true;
     } else {

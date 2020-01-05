@@ -67,11 +67,10 @@ function draw() {
 
 function mousePressed() {
 
-
     // Paint Tools 
     paintTools.pointInsidePaintChip(mouseX,mouseY); // Paint Chips
     for (let i=0;i<paintTools.buttons.length;i++) {
-        if (paintTools.buttons[i].pointInsideButton()) {
+        if (paintTools.buttons[i].pointInsideButton(mouseX,mouseY)) {
             paintTools.buttons[i].pushButton();
         }
     }
@@ -79,11 +78,12 @@ function mousePressed() {
 
 function mouseReleased() {
 
+    // Release buttons
     for (let i=0;i<paintTools.buttons.length;i++) {
-        if (paintTools.buttons[i].pointInsideButton()) {
+        if (paintTools.buttons[i].pointInsideButton(mouseX,mouseY)) {
             paintTools.buttons[i].releaseButton();
         } else {
-            paintTools.buttons[i].cancelButton();
+            paintTools.buttons[i].cancelButton(); // Cancel if now outside button
         }
     }
 }
@@ -188,16 +188,16 @@ class Button {
         this.pushed = true;
     }
 
+    cancelButton() {
+        this.pushed = false;
+    }
+
     releaseButton() {
-        cancelButton()
-        this.mode++;
+        this.cancelButton();
+        this.mode += 1;
         if (this.mode > this.modesMax) {
             this.mode = 0;
         }
-    }
-
-    cancelButton() {
-        this.pushed = false;
     }
 }
 
@@ -210,13 +210,15 @@ class StrokeButton extends Button {
 
     drawButton() {
         if (this.pushed == true) {
-
-        } else if (this.mode == 0) {
-            image(stroke1,this.x,this.y);
-        } else if (this.mode == 1) {
-            image(stroke2,this.x,this.y);
-        } else if (this.mode == 2) {
-            image(stroke3,this.x,this.y);
+            image(strokeX,this.x,this.y)
+        } else {
+            if (this.mode === 0) {
+                image(stroke1,this.x,this.y);
+            } else if (this.mode === 1) {
+                image(stroke2,this.x,this.y);
+            } else if (this.mode === 2) {
+                image(stroke3,this.x,this.y);
+            }
         }
     }
 
@@ -271,13 +273,13 @@ class PaintTools {
             }
         }
         this.PalChipsBottom = // Bottom of Palette Chips
-            (y + palOffsetY + (space + chipDim) * (paints/columns) 
-            + paletteChip.height); 
+            (y + palOffsetY + (space + chipDim) * (paints/columns)); 
 
 
         // Buttons
         this.buttons = [];
-        this.strokeButton = new StrokeButton(x,y + this.PalChipsBottom + 8, stroke1.width, stroke1.height)
+        this.strokeButton = new StrokeButton( // Stroke Button
+            x,y + this.PalChipsBottom, stroke1.width, stroke1.height)
         this.buttons.push(this.strokeButton);
     }
 

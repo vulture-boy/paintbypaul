@@ -17,6 +17,10 @@ function preload() {
     backChecker = loadImage('images/backChecker.png');
     paulLogo = loadImage('images/paulPage.png');
     paulLogo2 = loadImage('images/paulPage2.png');
+    stroke1 = loadImage('images/strokeSize1.png');
+    stroke2 = loadImage('images/strokeSize2.png');
+    stroke3 = loadImage('images/strokeSize3.png');
+    strokeX = loadImage('images/strokeSize4.png');
   }
 
 function setup() {
@@ -29,14 +33,14 @@ function setup() {
 
 function draw() {
 
-    // Padding Background
+    // Padding Background 
     for (i=0;i<padding;i+=backChecker.width) {
         for (j=0;j<windowHeight;j+=backChecker.height) {
             image(backChecker,i,j);
         }
     }
 
-    paintTools.drawPaintChips();
+    paintTools.drawTools();
     paulLogoBounce();
 
     // Drawing
@@ -140,16 +144,60 @@ class PaintChip { // Palette square of colour
     }
 }
 
+class StrokeButton {
+    constructor(x,y) {
+        this.x = x;
+        this.y = y;
+        this.pushed = false;
+        this.mode = 0;
+        this.modesMax = 2;
+        this.strokeWeights = [3,6,10];
+    }
+
+    drawButton() {
+        if (this.pushed == true) {
+
+        } else if (this.mode == 0) {
+            image(stroke1,this.x,this.y);
+        } else if (this.mode == 1) {
+            image(stroke2,this.x,this.y);
+        } else if (this.mode == 2) {
+            image(stroke3,this.x,this.y);
+        }
+    }
+
+    pointInsideButton() {
+        // Stroke Button: Change Stroke Size
+        if (withinRect(x,y,this.x,this.y,this.width, this.height)) {
+                return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    pushButton() {
+        this.pushed = true;
+    }
+
+    releaseButton() {
+        cancelButton()
+        this.mode++;
+        if (this.mode > this.modesMax) {
+            this.mode = 0;
+        }
+    }
+
+    cancelButton() {
+        this.pushed = false;
+    }
+}
+
 class PaintTools {
     constructor(x,y) {
         this.x = x;
         this.y = y;
-        this.paintChips = []; // array of paint chips
-        this.paintSelect = []; // Selected paints
-        this.selectionPosition = [x,y]; // Position of selection image
-        this.jig = 8; // Jig effect
-        this.jigTime = 0;
-        this.jigTimeMax = 30;
+ 
         this.colours = [color('#0f0905'), color('#e4f6e4'), color('#4f6ac4'),
             color('#ccc566'), color('#e4f6e9'), color('#c144ba'),
             color('#85c247'), color('#995f33'), color('#301745'),
@@ -161,19 +209,14 @@ class PaintTools {
         var chipDim = paletteChip.width; // Size of a chip
         var paints = 14; // Number of paints to use
         var columns = 2; // Number of columns of paints
-
-        // Palette Chips
-        for (let i=0; i< paints/columns; i++) {
-            for (let j=0; j< columns; j++) {
-                this.paintChips.push(new PaintChip( // Add to array
-                    x+ 10 + (space + chipDim) * j, // x position
-                    y+ 72 + (space + chipDim) * i + this.jig*j, // y position
-                    this.colours[i*2+j] // colour
-                ));
-            }
-        }
+            // Jig effect variables
+            this.jig = 8; 
+            this.jigTime = 0;
+            this.jigTimeMax = 30;
 
         // Selection Chips
+        this.paintSelect = []; // Selected paints
+        this.selectionPosition = [x,y]; // Position of selection image
         for (let i=0;i<2;i++) {
             this.paintSelect.push(new PaintChip( // Add to array
                 x + selectionPosition[0] + 14 + i*(16),
@@ -181,27 +224,47 @@ class PaintTools {
                 this.colours[i]
             ));
         }
+
+        // Palette Chips
+        var palOffsetX = 10;
+        var palOffsetY = 72;
+        this.paintChips = []; // array of paint chips
+        for (let i=0; i< paints/columns; i++) {
+            for (let j=0; j< columns; j++) {
+                this.paintChips.push(new PaintChip( // Add to array
+                    x+ palOffsetX + (space + chipDim) * j, // x position
+                    y+ palOffsetY + (space + chipDim) * i + this.jig*j, // y position
+                    this.colours[i*2+j] // colour
+                ));
+            }
+        }
+        this.PalChipsBottom = // Bottom of Palette Chips
+            (y + palOffsetY + (space + chipDim) * (paints/columns) 
+            + paletteChip.height); 
+
+
+        // Buttons
+        this.strokeButton = new StrokeButton(x,y + this.PalChipsBottom + 8)
     }
 
-    drawPaintChips() {
+    drawTools() {
         // Draw Palette Tools
         this.jiggle();
         image(paletteSelect,this.selectionPosition[0],this.selectionPosition[1]);
-        for (i=0;i<2;i++) {
+        for (i=0;i<this.paintSelect.length;i++) { // Draw selection chips
             this.paintSelect[i].drawRect();
         }
         for (i=0;i<this.paintChips.length;i++) {
             this.paintChips[i].drawRect();
         }
+        this.strokeButton.drawButton();
     }
 
     pointInsidePaintChip(x,y) {
         // Paint Chips: Change Colour
         for (i=0;i<this.paintChips.length;i++) {
-            if ((x >= this.paintChips[i].x) &&
-                (x <= this.paintChips[i].x + this.paintChips[i].width) &&
-                (y >= this.paintChips[i].y) &&
-                (y <= this.paintChips[i].y + this.paintChips[i].height)) {
+            if (withinRect(x,y,this.paintChips[i].x, this.paintChips[i].y, 
+                this.paintChips[i].width, this.paintChips[i].height)) {
 
                 if (mouseButton === LEFT) {
                     this.paintSelect[0].changeColor(this.paintChips[i].color);
@@ -235,5 +298,13 @@ class PaintTools {
                     this.paintChips[i].y - jiggleVal + 2 * jiggleVal * (i%2))
             }
         }
+    }
+}
+
+withinRect(px, py, rx,ry,rw,rh) { // Check if a point is inside a rectangle
+    if ((px >= rx) && (px <= rx+rw) && (py >= ry) && (py <= ry+rh)) {
+        return true;
+    } else {
+        return false;
     }
 }

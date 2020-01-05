@@ -1,0 +1,29 @@
+/*
+LoudPaul.com - Website for Paul Geldart
+
+- automatic updates
+- simplistic interface
+- sorting (band, date, a-z)
+- social links
+- mspaint style
+
+- music
+- videos
+- pictures
+- about
+- writing(?)
+- games
+- social links
+- downloads
+- discography
+
+Audio || Visual || Projects
+a music (discography at bottom)
+a sound design
+a podcast
+v video
+v media 
+p games 
+p inventions 
+
+*/

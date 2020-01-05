@@ -49,18 +49,18 @@ function draw() {
         // Stroke Size
         strokeWeight(paintTools.strokeButton.getStrokeWeight()); 
 
-        // Paint Zone
-        if (mouseX > padding) {
-            // Line between previous and current point
-            line(mouseX, mouseY, pmouseX, pmouseY);
-        }
-
         // Select colour
         if (mouseButton === LEFT) {
             stroke(paintTools.paintSelect[0].color); // Draw Colour
         }
         if (mouseButton === RIGHT) {
             stroke(paintTools.paintSelect[1].color);
+        }
+
+        // Paint Zone
+        if (mouseX > padding) {
+            // Line between previous and current point
+            line(mouseX, mouseY, pmouseX, pmouseY);
         }
     }
 }

@@ -113,12 +113,16 @@ function windowResized() {
 
 class PaintChip { // Palette square of colour
     constructor(x, y, color) {
-        this.x = x; // Position
-        this.y = y;
+        this.changePos(x,y);
         this.width = paletteChip.width; // Size
         this.height = paletteChip.height;
         this.borderSize = round(paletteChip.width/10);
         this.color = color; // Chip's colour
+    }
+
+    changePos(x,y) {
+        this.x = x;
+        this.y = y;
     }
 
     changeColor(newColor) { // Alter this chip's colour
@@ -143,6 +147,9 @@ class PaintTools {
         this.paintChips = []; // array of paint chips
         this.paintSelect = []; // Selected paints
         this.selectionPosition = [x,y]; // Position of selection image
+        this.jig = 8; // Jig effect
+        this.jigTime = 0;
+        this.jigTimeMax = 30;
         this.colours = [color('#0f0905'), color('#e4f6e4'), color('#4f6ac4'),
             color('#ccc566'), color('#e4f6e9'), color('#c144ba'),
             color('#85c247'), color('#995f33'), color('#301745'),
@@ -160,7 +167,7 @@ class PaintTools {
             for (let j=0; j< columns; j++) {
                 this.paintChips.push(new PaintChip( // Add to array
                     x+ 10 + (space + chipDim) * j, // x position
-                    y+ 72 + (space + chipDim) * i, // y position
+                    y+ 72 + (space + chipDim) * i + this.jig*j, // y position
                     this.colours[i*2+j] // colour
                 ));
             }
@@ -174,12 +181,11 @@ class PaintTools {
                 this.colours[i]
             ));
         }
-
-
     }
 
     drawPaintChips() {
         // Draw Palette Tools
+        this.jiggle();
         image(paletteSelect,this.selectionPosition[0],this.selectionPosition[1]);
         for (i=0;i<2;i++) {
             this.paintSelect[i].drawRect();
@@ -205,7 +211,29 @@ class PaintTools {
                 }
             }
         }
-        
-        return
+    }
+
+    jiggle() {
+        var jiggleVal = 2
+        this.jigTime++
+
+        if (this.jigTime == 0) { // Timer 1
+            this.jig += jiggleVal;
+            for (let i=0; i< this.paintChips.length; i++) {
+                this.paintChips[i].changePos(
+                    this.paintChips[i].x,
+                    this.paintChips[i].y + jiggleVal - 2 * jiggleVal * (i%2))
+            }
+        }
+
+        if (this.jigTime == this.jigTimeMax) { // Timer 2
+            this.jig -= jiggleVal;
+            this.jigTime = -1*this.jigTimeMax;
+            for (let i=0; i< this.paintChips.length; i++) {
+                this.paintChips[i].changePos(
+                    this.paintChips[i].x,
+                    this.paintChips[i].y - jiggleVal + 2 * jiggleVal * (i%2))
+            }
+        }
     }
 }

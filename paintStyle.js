@@ -12,7 +12,10 @@ var selectionPosition = [0,0]; // Position of selection icon
 let paintTools;
 
 function preload() {
-    paulPic = loadImage('images/rowdyPaul.png');
+
+    paulPics = [loadImage('images/Paul1.png'), 
+            loadImage('images/Paul2.png'),
+            loadImage('images/Paul3.png')];
     paletteChip = loadImage('images/paintChip.png');
     paletteSelect = loadImage('images/paintSets.png');
     backChecker = loadImage('images/backChecker.png');
@@ -154,9 +157,10 @@ function resetCanvas() {
 
     // Add a silly picture of paul (random?)
 
-    image(paulPic,
-        windowWidth/3 - paulPic.width/2 + random(windowWidth/3),
-        windowHeight/3 - paulPic.height/2 + random(windowHeight/3));
+    var newPaul = round(random(paulPics.length-1)) // Pick a random Paul
+    image(paulPics[newPaul], // Draw the Paul
+        windowWidth/3 - paulPics[newPaul].width/2 + random(windowWidth/3),
+        windowHeight/3 - paulPics[newPaul].height/2 + random(windowHeight/3));
 
 }
 

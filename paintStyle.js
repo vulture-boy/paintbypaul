@@ -4,7 +4,9 @@ Paint by Paul-----
 
 */
 var canv;
+var canvHeight = 0;
 var padding = 96;
+var logoOffset = 16;
 var lerpness = 0; // used for Paul's bobbing logo
 var lerpDir = 0;
 var selectionPosition = [0,0]; // Position of selection icon
@@ -15,17 +17,26 @@ function preload() {
     paletteChip = loadImage('images/paintChip.png');
     paletteSelect = loadImage('images/paintSets.png');
     backChecker = loadImage('images/backChecker.png');
+    //backChecker = loadImage('images/paintChip2.png');
     paulLogo = loadImage('images/paulPage.png');
     paulLogo2 = loadImage('images/paulPage2.png');
     stroke1 = loadImage('images/strokeSize1.png');
     stroke2 = loadImage('images/strokeSize2.png');
     stroke3 = loadImage('images/strokeSize3.png');
     strokeX = loadImage('images/strokeSize4.png');
+    file1 = loadImage('images/files1.png');
+    file2 = loadImage('images/files2.png');
+    file3 = loadImage('images/files3.png');
+    fileX = loadImage('images/files4.png');
+    eyedrop1 = loadImage('images/eyedrop1.png');
+    eyedrop2 = loadImage('images/eyedrop2.png');
+    eyedropX = loadImage('images/eyedrop2.png');
   }
 
 function setup() {
 
     canv = createCanvas();
+    canv.parent('canvas');
     resetCanvas();
     paintTools = new PaintTools(padding/2 - paletteSelect.width/2, 16);
 
@@ -35,7 +46,7 @@ function draw() {
 
     // Padding Background 
     for (i=0;i<padding;i+=backChecker.width) {
-        for (j=0;j<windowHeight;j+=backChecker.height) {
+        for (j=0;j<canvHeight;j+=backChecker.height) {
             image(backChecker,i,j);
         }
     }
@@ -101,7 +112,7 @@ function paulLogoBounce() {
         if (lerpness > lerpDist -2) {
             lerpDir = 1;
         }
-        image(paulLogo2, windowWidth - paulLogo.width - 16, 16 + lerpness)
+        image(paulLogo2, windowWidth - paulLogo.width - logoOffset, logoOffset + lerpness)
     } else if (lerpDir == 1) { // Move up
         if (lerpness > lerpDist/2) {
             lerpness += (lerpness - lerpDist - 4) * lerpPower;
@@ -111,13 +122,21 @@ function paulLogoBounce() {
         if (lerpness < 2) {
             lerpDir = 0;
         }
-        image(paulLogo, windowWidth - paulLogo.width - 16, 16 + lerpness)
+        image(paulLogo, windowWidth - paulLogo.width - logoOffset, logoOffset + lerpness)
     }
 }
 
 function resetCanvas() {
-    var canvWidth = windowWidth //- padding * 2;
-    var canvHeight = windowHeight //- padding * 2 - paintBarHeight;
+
+    // Determine minimum sizing
+
+    var canvWidth = max(windowWidth,paulLogo.width + padding + logoOffset) //- padding * 2;
+    try {
+        canvHeight = max(windowHeight,paintTools.bottom) //- padding * 2 - paintBarHeight;
+    } catch {
+        canvHeight = windowHeight;
+    }
+    
 
     resizeCanvas(canvWidth, canvHeight);
     canv.style('display', 'block'); // remove scrollbars... not working?
@@ -164,12 +183,31 @@ class PaintChip { // Palette square of colour
     }
 }
 
-class Button {
+class ToolItem {
     constructor(x,y,width,height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+}
+
+class ContentIcon extends ToolItem {
+    constructor(x,y,width,height,newImage,content) {
+        super(x,y,width,height);
+        this.myImage = newImage;
+        this.content = content; // STUB
+    }
+
+    drawIcon() {
+        image(fileX,this.x,this.y); // Shadow
+        image(this.myImage,this.x -2,this.y-2);
+    }
+}
+
+class Button extends ToolItem {
+    constructor(x,y,width,height) {
+        super(x,y,width,height);
         this.pushed = false;
         this.mode = 0;
         this.modesMax = 1;
@@ -204,8 +242,9 @@ class Button {
 class StrokeButton extends Button {
     constructor(x,y,width,height) {
         super(x,y,width,height);
+        this.mode = 1;
         this.modesMax = 2;
-        this.strokeWeights = [3,6,10];
+        this.strokeWeights = [3,8,16];
     }
 
     drawButton() {
@@ -227,6 +266,24 @@ class StrokeButton extends Button {
     }
 }
 
+class EyedropperButton extends Button {
+    constructor(x,y,width,height) {
+        super(x,y,width,height);
+    }
+
+    drawButton() {
+        if (this.pushed == true) { // Pushed down
+            image(eyedropX,this.x,this.y)
+        } else {
+            if (this.mode === 0) { // Unselected
+                image(eyedrop1,this.x,this.y);
+            } else if (this.mode === 1) { // Eyedropper Mode
+                image(eyedrop2,this.x,this.y);
+            }
+        }
+    }
+}
+
 class PaintTools {
     constructor(x,y) {
         this.x = x;
@@ -245,8 +302,9 @@ class PaintTools {
         var columns = 2; // Number of columns of paints
             // Jig effect variables
             this.jig = 8; 
-            this.jigTime = 0;
-            this.jigTimeMax = 30;
+            this.jigTime = millis();
+            this.jigTimeMax = 500;
+            this.jiggleVal = 2; // Value to jiggle
 
         // Selection Chips
         this.paintSelect = []; // Selected paints
@@ -272,28 +330,54 @@ class PaintTools {
                 ));
             }
         }
-        this.PalChipsBottom = // Bottom of Palette Chips
+        var palChipsBottom = // Bottom of Palette Chips
             (y + palOffsetY + (space + chipDim) * (paints/columns)); 
 
 
         // Buttons
         this.buttons = [];
         this.strokeButton = new StrokeButton( // Stroke Button
-            x,y + this.PalChipsBottom, stroke1.width, stroke1.height)
+            x,y + palChipsBottom, stroke1.width, stroke1.height)
         this.buttons.push(this.strokeButton);
+        this.eyedropButton = new EyedropperButton(
+            x,y + palChipsBottom + this.strokeButton.height + space,
+            eyedrop1.width, eyedrop1.height);
+        this.buttons.push(this.eyedropButton);
+        var buttonBottom = this.eyedropButton.y + this.eyedropButton.height + 16;
+
+        // Content Icons
+        this.contentIcons = [];
+        this.contentIcons.push(new ContentIcon(
+            x,buttonBottom,
+            file1.width, file1.height, file1, 0));
+        this.contentIcons.push(new ContentIcon(
+            x,buttonBottom + (space + file1.height),
+            file1.width, file1.height, file2, 0));
+        this.contentIcons.push(new ContentIcon(
+            x,buttonBottom + (space + file1.height) *2,
+            file1.width, file1.height, file3, 0));
+        var contentIconBottom = buttonBottom + 0;
+
+        // Determine bottom dimension
+        this.bottom = space + contentIconBottom + 16;
     }
 
     drawTools() {
         // Draw Palette Tools
         this.jiggle();
         image(paletteSelect,this.selectionPosition[0],this.selectionPosition[1]);
-        for (i=0;i<this.paintSelect.length;i++) { // Draw selection chips
+        for (let i=0;i<this.paintSelect.length;i++) { // Draw selection chips
             this.paintSelect[i].drawRect();
         }
-        for (i=0;i<this.paintChips.length;i++) {
+        for (let i=0;i<this.paintChips.length;i++) {
             this.paintChips[i].drawRect();
         }
-        this.strokeButton.drawButton();
+        for (let i=0; i<this.buttons.length;i++) {
+            this.buttons[i].drawButton();
+        }
+        for (let i=0; i<this.contentIcons.length;i++) {
+            this.contentIcons[i].drawIcon();
+        }
     }
 
     pointInsidePaintChip(x,y) {
@@ -313,26 +397,16 @@ class PaintTools {
     }
 
     jiggle() {
-        var jiggleVal = 2
-        this.jigTime++
 
-        if (this.jigTime == 0) { // Timer 1
-            this.jig += jiggleVal;
+        if (millis() - this.jigTime > this.jigTimeMax) { // Timer 1
+            this.jig += this.jiggleVal;
             for (let i=0; i< this.paintChips.length; i++) {
                 this.paintChips[i].changePos(
                     this.paintChips[i].x,
-                    this.paintChips[i].y + jiggleVal - 2 * jiggleVal * (i%2))
+                    this.paintChips[i].y + this.jiggleVal - 2 * this.jiggleVal * (i%2))
             }
-        }
-
-        if (this.jigTime == this.jigTimeMax) { // Timer 2
-            this.jig -= jiggleVal;
-            this.jigTime = -1*this.jigTimeMax;
-            for (let i=0; i< this.paintChips.length; i++) {
-                this.paintChips[i].changePos(
-                    this.paintChips[i].x,
-                    this.paintChips[i].y - jiggleVal + 2 * jiggleVal * (i%2))
-            }
+            this.jiggleVal *= -1;
+            this.jigTime = millis();
         }
     }
 }

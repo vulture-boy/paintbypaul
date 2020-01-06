@@ -7,7 +7,6 @@ var canv;
 var canvHeight = 0;
 var padding = 96;
 var logoOffset = 16;
-var lerpness = 0; // used for Paul's bobbing logo
 var lerpDir = 0;
 var selectionPosition = [0,0]; // Position of selection icon
 let paintTools;
@@ -39,6 +38,7 @@ function setup() {
     canv.parent('canvas');
     resetCanvas();
     paintTools = new PaintTools(padding/2 - paletteSelect.width/2, 16);
+    paulText = new PaulLogo();
 
 }
 
@@ -52,7 +52,7 @@ function draw() {
     }
 
     paintTools.drawTools();
-    paulLogoBounce();
+    paulText.drawMe();
 
     // Drawing
     if (mouseIsPressed === true) { // Draw Action
@@ -99,31 +99,43 @@ function mouseReleased() {
     }
 }
 
-function paulLogoBounce() {
-    // Paul's logo
-    var lerpDist = windowHeight * 0.4; // distance to lerp
-    var lerpPower = 0.03; // strength of lerp 
-    if (lerpDir == 0) { // Move down
-        if (lerpness > lerpDist/2) {
-            lerpness += (lerpDist - lerpness) * lerpPower;
-        } else {
-            lerpness += (lerpness + 4) * lerpPower;
-        }
-        if (lerpness > lerpDist -2) {
-            lerpDir = 1;
-        }
-        image(paulLogo2, windowWidth - paulLogo.width - logoOffset, logoOffset + lerpness)
-    } else if (lerpDir == 1) { // Move up
-        if (lerpness > lerpDist/2) {
-            lerpness += (lerpness - lerpDist - 4) * lerpPower;
-        } else {
-            lerpness += (0 - lerpness) * lerpPower;
-        }
-        if (lerpness < 2) {
-            lerpDir = 0;
-        }
-        image(paulLogo, windowWidth - paulLogo.width - logoOffset, logoOffset + lerpness)
+
+
+class PaulLogo {
+    constructor() {
+        this.width = paulLogo.width;
+        this.height = paulLogo.height;
+        this.lerpness = 0;
+        this.lerpDir = 0;
+        this.lerpDist = canvHeight * 0.5;
+        this.lerpTime = 3;
+
+        this.lerpDown(this);
     }
+
+    lerpDown(obj) {
+        this.lerpDir =1;
+        TweenLite.to(this, this.lerpTime, {lerpness:this.lerpDist, 
+            ease:Power2.easeInOut, onComplete:function(){obj.lerpUp(obj)}});
+    }
+
+    lerpUp(obj) {
+        this.lerpDir=0;
+        TweenLite.to(this, this.lerpTime, {lerpness:0, 
+            ease:Power2.easeInOut, onComplete:function(){obj.lerpDown(obj)}});
+    }
+
+    drawMe() {
+        var myX = windowWidth - paulLogo.width - logoOffset;
+        var myY = logoOffset + this.lerpness;
+        if (lerpDir == 1) {
+            image(paulLogo,myX, myY);
+        } else if (lerpDir == 0) {
+            image(paulLogo2,myX, myY);
+        }
+    }
+
+    
 }
 
 function resetCanvas() {
@@ -137,7 +149,6 @@ function resetCanvas() {
         canvHeight = windowHeight;
     }
     
-
     resizeCanvas(canvWidth, canvHeight);
     canv.style('display', 'block'); // remove scrollbars... not working?
 

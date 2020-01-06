@@ -88,6 +88,10 @@ function mousePressed() {
             paintTools.buttons[i].pushButton();
         }
     }
+
+    for (let i=0;i<paintTools.contentIcons.length;i++) {
+        paintTools.contentIcons[i].openContent();
+    }
 }
 
 function mouseReleased() {
@@ -100,45 +104,6 @@ function mouseReleased() {
             paintTools.buttons[i].cancelButton(); // Cancel if now outside button
         }
     }
-}
-
-
-
-class PaulLogo {
-    constructor() {
-        this.width = paulLogo.width;
-        this.height = paulLogo.height;
-        this.lerpness = 0;
-        this.lerpDir = 0;
-        this.lerpDist = canvHeight * 0.5;
-        this.lerpTime = 3;
-
-        this.lerpDown(this);
-    }
-
-    lerpDown(obj) {
-        this.lerpDir =1;
-        TweenLite.to(this, this.lerpTime, {lerpness:this.lerpDist, 
-            ease:Power2.easeInOut, onComplete:function(){obj.lerpUp(obj)}});
-    }
-
-    lerpUp(obj) {
-        this.lerpDir=0;
-        TweenLite.to(this, this.lerpTime, {lerpness:0, 
-            ease:Power2.easeInOut, onComplete:function(){obj.lerpDown(obj)}});
-    }
-
-    drawMe() {
-        var myX = windowWidth - paulLogo.width - logoOffset;
-        var myY = logoOffset + this.lerpness;
-        if (lerpDir == 1) {
-            image(paulLogo,myX, myY);
-        } else if (lerpDir == 0) {
-            image(paulLogo2,myX, myY);
-        }
-    }
-
-    
 }
 
 function resetCanvas() {
@@ -212,11 +177,42 @@ class ContentIcon extends ToolItem {
         super(x,y,width,height);
         this.myImage = newImage;
         this.content = content; // STUB
+
+        // Jig effect variables
+        this.jigTick = round(random()); 
+        this.jig= 0;
+        this.jigTime = millis();
+        this.jigTimeMax = 250;
+        this.jiggleVal = -1; // Value to jiggle
     }
 
     drawIcon() {
-        image(fileX,this.x,this.y); // Shadow
-        image(this.myImage,this.x -2,this.y-2);
+        image(fileX,this.x +2,this.y+2);
+        image(this.myImage,this.x + this.jig,this.y + this.jig); // Shadow
+        this.jiggle();
+    }
+
+    openContent() {
+        var myElement = document.getElementById(this.content);
+
+        // Stroke Button: Change Stroke Size
+        if (withinRect(mouseX, mouseY, this.x, this.y, this.width, this.height)) {
+                myElement.style.display = "block"
+        }
+    }
+
+    jiggle() {
+
+        if (millis() - this.jigTime > this.jigTimeMax) {
+            this.jig += this.jiggleVal;
+            this.jig += this.jiggleVal;
+            this.jigTick++
+            this.jigTime = millis();
+            if (this.jigTick ==2) {
+                this.jiggleVal *= -1;
+                this.jigTick = 0;
+            }
+        } 
     }
 }
 
@@ -364,14 +360,15 @@ class PaintTools {
         this.contentIcons = [];
         this.contentIcons.push(new ContentIcon(
             x,buttonBottom,
-            file1.width, file1.height, file1, 0));
+            file1.width, file1.height, file1, 'musicPage'));
         this.contentIcons.push(new ContentIcon(
             x,buttonBottom + (space + file1.height),
-            file1.width, file1.height, file2, 0));
+            file1.width, file1.height, file2, 'videoPage'));
         this.contentIcons.push(new ContentIcon(
             x,buttonBottom + (space + file1.height) *2,
-            file1.width, file1.height, file3, 0));
-        var contentIconBottom = buttonBottom + 0;
+            file1.width, file1.height, file3, 'projectPage'));
+        var contentIconBottom = buttonBottom 
+            + (space + file1.height) *3;
 
         // Determine bottom dimension
         this.bottom = space + contentIconBottom + 16;
@@ -425,6 +422,44 @@ class PaintTools {
         }
     }
 }
+
+class PaulLogo {
+    constructor() {
+        this.width = paulLogo.width;
+        this.height = paulLogo.height;
+        this.lerpness = 0;
+        this.lerpDir = 0;
+        this.lerpDist = canvHeight * 0.5;
+        this.lerpTime = 3;
+
+        this.lerpDown(this);
+    }
+
+    lerpDown(obj) {
+        this.lerpDir =1;
+        TweenLite.to(this, this.lerpTime, {lerpness:this.lerpDist, 
+            ease:Power2.easeInOut, onComplete:function(){obj.lerpUp(obj)}});
+    }
+
+    lerpUp(obj) {
+        this.lerpDir=0;
+        TweenLite.to(this, this.lerpTime, {lerpness:0, 
+            ease:Power2.easeInOut, onComplete:function(){obj.lerpDown(obj)}});
+    }
+
+    drawMe() {
+        var myX = windowWidth - paulLogo.width - logoOffset;
+        var myY = logoOffset + this.lerpness;
+        if (lerpDir == 1) {
+            image(paulLogo,myX, myY);
+        } else if (lerpDir == 0) {
+            image(paulLogo2,myX, myY);
+        }
+    }
+
+    
+}
+
 
 // SUPPORT FUNCTIONS
 function withinRect(px, py, rx, ry, rw, rh) { // Check if a point is inside a rectangle

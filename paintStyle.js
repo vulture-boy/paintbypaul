@@ -4,10 +4,12 @@ Paint by Paul-----
 
 */
 var canv;
+var canvWidth = 0;
 var canvHeight = 0;
 var padding = 96;
 var logoOffset = 16;
 var lerpDir = 0;
+var topZ = 4; // lazy var to track z layer height
 var selectionPosition = [0,0]; // Position of selection icon
 let paintTools;
 
@@ -110,7 +112,7 @@ function resetCanvas() {
 
     // Determine minimum sizing
 
-    var canvWidth = max(windowWidth,paulLogo.width + padding + logoOffset) //- padding * 2;
+    canvWidth = max(windowWidth,paulLogo.width + padding + logoOffset) //- padding * 2;
     try {
         canvHeight = max(windowHeight,paintTools.bottom) //- padding * 2 - paintBarHeight;
     } catch {
@@ -195,9 +197,18 @@ class ContentIcon extends ToolItem {
     openContent() {
         var myElement = document.getElementById(this.content);
 
-        // Stroke Button: Change Stroke Size
+        // In box?
         if (withinRect(mouseX, mouseY, this.x, this.y, this.width, this.height)) {
-                myElement.style.display = "block"
+            myElement.style.display = "block"
+
+            myElement.style.zIndex = topZ; // Change z position
+            topZ++
+
+            if (canvWidth > 750) { // Random window place
+                myElement.style.left = String(padding + round(random(canvWidth -750))) + "px";
+            } else {
+                myElement.style.left = String(padding + round(random(230))) + "px";
+            }
         }
     }
 
@@ -283,6 +294,7 @@ class EyedropperButton extends Button {
     }
 
     drawButton() {
+        /* TEMP!
         if (this.pushed == true) { // Pushed down
             image(eyedropX,this.x,this.y)
         } else {
@@ -292,6 +304,7 @@ class EyedropperButton extends Button {
                 image(eyedrop2,this.x,this.y);
             }
         }
+        */
     }
 }
 

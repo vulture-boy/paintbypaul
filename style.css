@@ -3,6 +3,7 @@ body {
     text-align: center;
     color: blue;
     font-family: 'Cutive Mono', monospace;
+    image-rendering: pixelated; /* Ensures nearest-neighbour scaling. Pixels! */
 
     margin: 0;
     display: flex; 
@@ -14,12 +15,23 @@ body {
     /*align-items: center;*/
 }
 
+h1 {
+    color: blue;
+    font-family: 'munroregular','Cutive Mono', monospace;
+}
+
+p {
+    text-align: left;
+    margin: 8px;
+}
+
 .page {
     z-index: 2;
     left: 128px;
     top: 80px;
     border: 3px solid #BBBBBB;
-    position:fixed;
+    position: fixed;
+    align-self: center;
     background-color: white;
     max-width: 75%;
     display: none;
@@ -32,8 +44,40 @@ body {
 
 #topBorder {
     border: 1px solid #222222;
+    height: 20px;
+}
+
+#vanityImage {
+    max-width: 100%;
+    max-height: 100%;
 }
 
 #musicPage {
-    display: block;
+    left: 220px;
+    top: 200px;
+    right: 200px;
+    max-width: 450px;
+}
+
+#videoPage {
+    left: 140px;
+    top: 60px;
+    right: 160px;
+    max-width: 570px;
+}
+
+#projectPage {
+    left: 300px;
+    top: 120px;
+    right: 60px;
+    max-width: 720px;
+}
+
+@font-face {
+    font-family: 'munroregular';
+    src: url('fonts/munro-webfont.woff2') format('woff2'),
+         url('fonts/munro-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
 }

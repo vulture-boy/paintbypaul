@@ -209,6 +209,12 @@ class ContentIcon extends ToolItem {
             } else {
                 myElement.style.left = String(padding + round(random(230))) + "px";
             }
+
+            if (canvHeight > 400) { // Random window place
+                myElement.style.top = String(round(random(canvHeight -400))) + "px";
+            } else {
+                myElement.style.top = String(round(random(70))) + "px";
+            }
         }
     }
 

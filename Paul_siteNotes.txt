@@ -26,4 +26,11 @@ v media
 p games 
 p inventions 
 
+----------------------------
+Todo:
+- Page Icons -> Page Windows -> Page Content
+- "Pixelated" drawing using small rects (draw to grid, by length)
+- Button delay timer (for mobile presses)
+- canvas height (min dimensions)
+
 */

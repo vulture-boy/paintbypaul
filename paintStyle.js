@@ -499,7 +499,7 @@ class Window95 {
     checkScreenDims() {
         // Check dimensions of the screen for size adjustments
         
-        if (canvWidth < 400) {
+        if (canvWidth / canvHeight < 1) {
             this.domObj.id = "fullPage";
         } else {
             if (!this.fullActive) {

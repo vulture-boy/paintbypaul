@@ -4,7 +4,7 @@
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Fonts & Style-->
     <link href="https://fonts.googleapis.com/css?family=Cutive+Mono&display=swap" rel="stylesheet">    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
@@ -20,7 +20,7 @@
 
   </head>
   <body>
-    <div id="box">
+    <div id="windowBoxes">
       <div class="page" id="musicPage">
         <div class="topBorder"><img src="images/topBorder.png" width="90%" height="20px"></img><img class="exitBtn" onclick="invisWindow('musicPage')" src="images/exitIcon.png"></img></div>
         <h1>lil' jingles for u</h1>
@@ -51,7 +51,7 @@
         </p>
 
       </div>
-      <div id="canvas" oncontextmenu="return false;"></div>
+      <div id="canvas" touchaction="none" oncontextmenu="return false;"></div>
     </div>
   </body><footer>
 

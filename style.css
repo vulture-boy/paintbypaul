@@ -7,12 +7,6 @@ body {
 
     margin: 0;
     display: flex; 
-    
-    /* This centers our sketch horizontally. */
-    /*justify-content: center;*/
-    
-    /* This centers our sketch vertically. */
-    /*align-items: center;*/
 }
 
 h1 {
@@ -34,6 +28,8 @@ p {
     align-self: center;
     background-color: white;
     max-width: 75%;
+    min-width: 300px;
+    height: auto;
     display: none;
 }
 
@@ -71,6 +67,13 @@ p {
     top: 120px;
     right: 60px;
     max-width: 720px;
+}
+
+#fullPage {
+    left: 64px;
+    right: 64px;
+    width: calc(100% - 64px);
+    max-width: calc(100% - 64px);
 }
 
 @font-face {

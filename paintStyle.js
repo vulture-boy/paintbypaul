@@ -40,11 +40,10 @@ function preload() {
 function setup() {
 
     canv = createCanvas();
-    canv.parent('canvas');
-    resetCanvas();
+    canv.parent('canvas'); // Assign to DOM object
     paintTools = new PaintTools(padding/2 - paletteSelect.width/2, 16);
+    resetCanvas(); 
     paulText = new PaulLogo();
-
 }
 
 function draw() {
@@ -108,6 +107,7 @@ function mouseReleased() {
     }
 }
 
+/// Re-adjusts canvas for modified dimensions (or initialization)
 function resetCanvas() {
 
     // Determine minimum sizing
@@ -122,8 +122,9 @@ function resetCanvas() {
     resizeCanvas(canvWidth, canvHeight);
     canv.style('display', 'block'); // remove scrollbars... not working?
 
-    // Add a silly picture of paul (random?)
+    paintTools.adjustWindows();
 
+    // Add a silly picture of paul (random?)
     var newPaul = round(random(paulPics.length-1)) // Pick a random Paul
     image(paulPics[newPaul], // Draw the Paul
         windowWidth/3 - paulPics[newPaul].width/2 + random(windowWidth/3),
@@ -195,26 +196,10 @@ class ContentIcon extends ToolItem {
     }
 
     openContent() {
-        var myElement = document.getElementById(this.content);
 
         // In box?
         if (withinRect(mouseX, mouseY, this.x, this.y, this.width, this.height)) {
-            myElement.style.display = "block"
-
-            myElement.style.zIndex = topZ; // Change z position
-            topZ++
-
-            if (canvWidth > 750) { // Random window place
-                myElement.style.left = String(padding + round(random(canvWidth -750))) + "px";
-            } else {
-                myElement.style.left = String(padding + round(random(230))) + "px";
-            }
-
-            if (canvHeight > 400) { // Random window place
-                myElement.style.top = String(round(random(canvHeight -400))) + "px";
-            } else {
-                myElement.style.top = String(round(random(70))) + "px";
-            }
+            this.content.openWindow();
         }
     }
 
@@ -379,13 +364,13 @@ class PaintTools {
         this.contentIcons = [];
         this.contentIcons.push(new ContentIcon(
             x,buttonBottom,
-            file1.width, file1.height, file1, 'musicPage'));
+            file1.width, file1.height, file1, new Window95('musicPage')));
         this.contentIcons.push(new ContentIcon(
             x,buttonBottom + (space + file1.height),
-            file1.width, file1.height, file2, 'videoPage'));
+            file1.width, file1.height, file2, new Window95('videoPage')));
         this.contentIcons.push(new ContentIcon(
             x,buttonBottom + (space + file1.height) *2,
-            file1.width, file1.height, file3, 'projectPage'));
+            file1.width, file1.height, file3, new Window95('projectPage')));
         var contentIconBottom = buttonBottom 
             + (space + file1.height) *3;
 
@@ -440,6 +425,13 @@ class PaintTools {
             this.jigTime = millis();
         }
     }
+
+    adjustWindows() {
+        // Set windows to full, if applicable
+        for (let i=0; i< this.contentIcons.length; i++) {
+            this.contentIcons[i].content.checkScreenDims();
+        }
+    }
 }
 
 class PaulLogo {
@@ -479,6 +471,55 @@ class PaulLogo {
     
 }
 
+class Window95 {
+    constructor(domReference) {
+        this.domObj = document.getElementById(domReference);
+        this.domID = this.domObj.id;
+        this.fullActive = false;
+    }
+
+    openWindow() {
+        this.domObj.style.display = "block";
+        this.domObj.style.zIndex = topZ;
+        topZ++
+
+        if (canvWidth > 750) { // Randomize window placement
+            this.domObj.style.left = String(padding + round(random(canvWidth -750))) + "px";
+        } else {
+            this.domObj.style.left = String(padding + round(random(230))) + "px";
+        } 
+        
+        if (canvHeight > 400) { // Random window place (smaller)
+            this.domObj.style.top = String(round(random(canvHeight -400))) + "px";
+        } else {
+            this.domObj.style.top = String(round(random(70))) + "px";
+        }
+    }
+
+    checkScreenDims() {
+        // Check dimensions of the screen for size adjustments
+        
+        if (canvWidth < 400) {
+            this.domObj.id = "fullPage";
+        } else {
+            if (!this.fullActive) {
+                this.domObj.id = this.domID;
+            }
+        }
+    }
+
+    setFull(newValue) {
+        // Swap IDs for fullscreen mode
+        if (!newValue) { // Disable Full Mode
+            // STUB: Also check if resolution is OK
+            this.fullActive = false;
+            this.domObj.id = this.domID;
+        } else { // Enable Full Mode
+            this.fullActive = true;
+            this.domObj.id = "fullPage";
+        }
+    }
+}
 
 // SUPPORT FUNCTIONS
 function withinRect(px, py, rx, ry, rw, rh) { // Check if a point is inside a rectangle

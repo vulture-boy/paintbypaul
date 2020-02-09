@@ -96,6 +96,14 @@ function sketch() {
     }
 }
 
+function touchStarted() { // Ensures touches work properly
+    mousePressed();
+}
+
+function touchEnded() {
+    mouseReleased();
+}
+
 function mousePressed() {
 
     // Paint Tools 

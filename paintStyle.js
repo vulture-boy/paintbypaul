@@ -9,6 +9,8 @@ var canvHeight = 0;
 var padding = 96;
 var logoOffset = 32;
 var lerpDir = 0;
+var touchTimer = 0;
+var touchDelay = 500;
 var topZ = 4; // lazy var to track z layer height
 var selectionPosition = [0,0]; // Position of selection icon
 let paintTools;
@@ -97,7 +99,11 @@ function sketch() {
 }
 
 function touchStarted() { // Ensures touches work properly
-    mousePressed();
+
+    if (millis() - touchTimer > touchDelay) {
+        mousePressed();
+        touchTimer = millis();
+    }
 }
 
 function touchEnded() {

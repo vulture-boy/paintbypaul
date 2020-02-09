@@ -523,7 +523,7 @@ class Window95 {
         topZ++
 
         var leftVal; 
-        if (canvWidth > 1000) { // Randomize window placement
+        if (canvWidth > 750) { // Randomize window placement
 
             leftVal = padding + round(random(canvWidth -750));
             this.domObj.style.left = String(leftVal + "px");

@@ -443,7 +443,10 @@ class PaulLogo {
         this.lerpDist = canvHeight * 0.5;
         this.lerpTime = 3;
 
-        this.lerpDown(this);
+        if (windowHeight > 500) { // Confirm this is worth initating
+            this.lerpDown(this);
+        }
+        
     }
 
     lerpDown(obj) {

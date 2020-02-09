@@ -52,19 +52,16 @@ p {
 
 #musicPage {
     left: 220px;
-    top: 200px;
     max-width: 450px;
 }
 
 #videoPage {
     left: 140px;
-    top: 60px;
     max-width: 570px;
 }
 
 #projectPage {
     left: 300px;
-    top: 120px;
     max-width: 720px;
 }
 

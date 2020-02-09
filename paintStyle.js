@@ -61,22 +61,38 @@ function draw() {
     // Drawing
     if (mouseIsPressed === true) { // Draw Action
 
-        // Stroke Size
-        strokeWeight(paintTools.strokeButton.getStrokeWeight()); 
+        if (paintTools.eyedropButton.mode === 1 && mouseX > padding) { // Eyedrop Mode
+            
+            pixPoint = get(mouseX,mouseY);
+            pickedCol = color(pixPoint[0], pixPoint[1], pixPoint[2], pixPoint[3]);
+            if (mouseButton === LEFT) {
+                paintTools.paintSelect[0].color = pickedCol;
+            } else if (mouseButton === RIGHT) {
+                paintTools.paintSelect[2].color = pickedCol;
+            }
+        } else { // Drawing
+            sketch();
+        }
+    }
+}
 
-        // Select colour
-        if (mouseButton === LEFT) {
-            stroke(paintTools.paintSelect[0].color); // Draw Colour
-        }
-        if (mouseButton === RIGHT) {
-            stroke(paintTools.paintSelect[1].color);
-        }
+function sketch() {
+    
+    // Stroke Size
+    strokeWeight(paintTools.strokeButton.getStrokeWeight()); 
 
-        // Paint Zone
-        if (mouseX > padding) {
-            // Line between previous and current point
-            line(mouseX, mouseY, pmouseX, pmouseY);
-        }
+    // Select colour
+    if (mouseButton === LEFT) {
+        stroke(paintTools.paintSelect[0].color); // Draw Colour
+    }
+    if (mouseButton === RIGHT) {
+        stroke(paintTools.paintSelect[1].color);
+    }
+
+    // Paint Zone
+    if (mouseX > padding) {
+        // Line between previous and current point
+        line(mouseX, mouseY, pmouseX, pmouseY);
     }
 }
 
@@ -285,7 +301,7 @@ class EyedropperButton extends Button {
     }
 
     drawButton() {
-        /* TEMP!
+
         if (this.pushed == true) { // Pushed down
             image(eyedropX,this.x,this.y)
         } else {
@@ -295,7 +311,6 @@ class EyedropperButton extends Button {
                 image(eyedrop2,this.x,this.y);
             }
         }
-        */
     }
 }
 
@@ -479,7 +494,6 @@ class Window95 {
         this.domObj = document.getElementById(domReference);
         this.domID = (' ' + this.domObj.id).slice(1);
         this.fullActive = false;
-
         
         this.defaultLeft = "96px";
         this.defaultRight = (' ' + this.domObj.style.right).slice(1);
@@ -489,7 +503,6 @@ class Window95 {
         this.defaultHeight = (' ' + this.domObj.style.height).slice(1); 
         this.defaultMaxHeight = (' ' + this.domObj.style.heightMax).slice(1); 
         
-
         /*
         this.defaultLeft = "96px";
         this.defaultRight = "60px";

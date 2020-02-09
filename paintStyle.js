@@ -121,6 +121,10 @@ function mouseReleased() {
             paintTools.buttons[i].cancelButton(); // Cancel if now outside button
         }
     }
+
+    if (paintTools.eyedropButton.mode === 1 && mouseX > padding) {
+        paintTools.eyedropButton.mode = 0;
+    }
 }
 
 /// Re-adjusts canvas for modified dimensions (or initialization)

@@ -7,7 +7,7 @@ var canv;
 var canvWidth = 0;
 var canvHeight = 0;
 var padding = 96;
-var logoOffset = 16;
+var logoOffset = 32;
 var lerpDir = 0;
 var topZ = 4; // lazy var to track z layer height
 var selectionPosition = [0,0]; // Position of selection icon
@@ -440,7 +440,7 @@ class PaulLogo {
         this.height = paulLogo.height;
         this.lerpness = 0;
         this.lerpDir = 0;
-        this.lerpDist = canvHeight * 0.5;
+        this.lerpDist = canvHeight * 0.3;
         this.lerpTime = 3;
 
         if (windowHeight > 500) { // Confirm this is worth initating

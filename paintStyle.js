@@ -526,7 +526,7 @@ class Window95 {
     checkScreenDims() {
         // Check dimensions of the screen for size adjustments
         
-        if (canvWidth / canvHeight < 1) {
+        if (windowWidth / windowHeight < 1) {
             this.fullStyle();
         } else {
             this.normalStyle();

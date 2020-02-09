@@ -528,7 +528,7 @@ class Window95 {
             leftVal = padding + round(random(canvWidth -750));
             this.domObj.style.left = String(leftVal + "px");
         } else {
-            this.domObj.style.left = string(padding);
+            this.domObj.style.left = String(padding + round(random(48)) + "px");
         } 
         this.defaultLeft = this.domObj.style.left;
         

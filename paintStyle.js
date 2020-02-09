@@ -503,7 +503,7 @@ class Window95 {
         topZ++
 
         var leftVal; 
-        if (canvWidth > 750) { // Randomize window placement
+        if (canvWidth > 1000) { // Randomize window placement
 
             leftVal = padding + round(random(canvWidth -750));
             this.domObj.style.left = String(leftVal + "px");
@@ -526,7 +526,7 @@ class Window95 {
     checkScreenDims() {
         // Check dimensions of the screen for size adjustments
         
-        if (windowWidth / windowHeight < 1) {
+        if (windowWidth < 750 ) {
             this.fullStyle();
         } else {
             this.normalStyle();

@@ -559,7 +559,8 @@ class Window95 {
         this.domObj.style.left = String(padding + "px");
         this.domObj.style.right = "0px";
         this.domObj.style.top = "0px";
-        this.domObj.style.width = "100%";
+        var vv = windowWidth - padding;
+        this.domObj.style.width = String(vv + "px");
         this.domObj.style.maxWidth = "100%";
         this.domObj.style.height = "100%";
         this.domObj.style.maxHeight = "100%";

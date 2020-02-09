@@ -7,6 +7,7 @@ body {
 
     margin: 0;
     display: flex; 
+    overflow-x: scroll;
 }
 
 h1 {
@@ -31,6 +32,7 @@ p {
     min-width: 300px;
     height: auto;
     display: none;
+    draggable: true;
 }
 
 .pageContent {
@@ -51,29 +53,19 @@ p {
 #musicPage {
     left: 220px;
     top: 200px;
-    right: 200px;
     max-width: 450px;
 }
 
 #videoPage {
     left: 140px;
     top: 60px;
-    right: 160px;
     max-width: 570px;
 }
 
 #projectPage {
     left: 300px;
     top: 120px;
-    right: 60px;
     max-width: 720px;
-}
-
-#fullPage {
-    left: 64px;
-    right: 64px;
-    width: calc(100% - 64px);
-    max-width: calc(100% - 64px);
 }
 
 @font-face {

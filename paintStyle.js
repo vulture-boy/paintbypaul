@@ -474,8 +474,27 @@ class PaulLogo {
 class Window95 {
     constructor(domReference) {
         this.domObj = document.getElementById(domReference);
-        this.domID = this.domObj.id;
+        this.domID = (' ' + this.domObj.id).slice(1);
         this.fullActive = false;
+
+        
+        this.defaultLeft = "96px";
+        this.defaultRight = (' ' + this.domObj.style.right).slice(1);
+        this.defaultTop = (' ' + this.domObj.style.top).slice(1);
+        this.defaultWidth = (' ' + this.domObj.style.width).slice(1); 
+        this.defaultMaxWidth = (' ' + this.domObj.style.widthMax).slice(1);
+        this.defaultHeight = (' ' + this.domObj.style.height).slice(1); 
+        this.defaultMaxHeight = (' ' + this.domObj.style.heightMax).slice(1); 
+        
+
+        /*
+        this.defaultLeft = "96px";
+        this.defaultRight = "60px";
+        this.defaultTop = "60px";
+        this.defaultMaxWidth = "720px"
+        this.defaultHeight = "auto";
+        */
+
     }
 
     openWindow() {
@@ -483,28 +502,34 @@ class Window95 {
         this.domObj.style.zIndex = topZ;
         topZ++
 
+        var leftVal; 
         if (canvWidth > 750) { // Randomize window placement
-            this.domObj.style.left = String(padding + round(random(canvWidth -750))) + "px";
+
+            leftVal = padding + round(random(canvWidth -750));
+            this.domObj.style.left = String(leftVal + "px");
         } else {
-            this.domObj.style.left = String(padding + round(random(230))) + "px";
+            this.domObj.style.left = string(padding);
         } 
+        this.defaultLeft = this.domObj.style.left;
         
         if (canvHeight > 400) { // Random window place (smaller)
             this.domObj.style.top = String(round(random(canvHeight -400))) + "px";
         } else {
             this.domObj.style.top = String(round(random(70))) + "px";
         }
+        this.defaultTop = this.domObj.style.top;
+
+        this.fullActive = false;
+        this.checkScreenDims();
     }
 
     checkScreenDims() {
         // Check dimensions of the screen for size adjustments
         
         if (canvWidth / canvHeight < 1) {
-            this.domObj.id = "fullPage";
+            this.fullStyle();
         } else {
-            if (!this.fullActive) {
-                this.domObj.id = this.domID;
-            }
+            this.normalStyle();
         }
     }
 
@@ -513,11 +538,31 @@ class Window95 {
         if (!newValue) { // Disable Full Mode
             // STUB: Also check if resolution is OK
             this.fullActive = false;
-            this.domObj.id = this.domID;
+            this.normalStyle();
         } else { // Enable Full Mode
             this.fullActive = true;
-            this.domObj.id = "fullPage";
+            this.fullStyle();
         }
+    }
+
+    normalStyle() {
+        this.domObj.style.left = this.defaultLeft;
+        this.domObj.style.right = "auto";
+        this.domObj.style.top = this.defaultTop;
+        this.domObj.style.width = this.defaultWidth;
+        this.domObj.style.maxWidth = this.defaultMaxWidth;
+        this.domObj.style.height = this.defaultHeight;
+        this.domObj.style.maxHeight = this.defaultMaxHeight;
+    }
+
+    fullStyle() {
+        this.domObj.style.left = String(padding + "px");
+        this.domObj.style.right = "0px";
+        this.domObj.style.top = "0px";
+        this.domObj.style.width = "100%";
+        this.domObj.style.maxWidth = "100%";
+        this.domObj.style.height = "100%";
+        this.domObj.style.maxHeight = "100%";
     }
 }
 

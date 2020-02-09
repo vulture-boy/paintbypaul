@@ -512,7 +512,7 @@ class Window95 {
         } 
         this.defaultLeft = this.domObj.style.left;
         
-        if (canvHeight > 400) { // Random window place (smaller)
+        if (windowHeight > 400) { // Random window place (smaller)
             this.domObj.style.top = String(round(random(canvHeight -400))) + "px";
         } else {
             this.domObj.style.top = String(round(random(70))) + "px";

@@ -19,26 +19,26 @@ let paintTools;
 
 function preload() {
 
-    paulPics = [loadImage('images/Paul1.png'), 
-            loadImage('images/Paul2.png'),
-            loadImage('images/Paul3.png')];
-    paletteChip = loadImage('images/paintChip.png');
-    paletteSelect = loadImage('images/paintSets.png');
-    backChecker = loadImage('images/backChecker.png');
-    //backChecker = loadImage('images/paintChip2.png');
-    paulLogo = loadImage('images/paulPage.png');
-    paulLogo2 = loadImage('images/paulPage2.png');
-    stroke1 = loadImage('images/strokeSize1.png');
-    stroke2 = loadImage('images/strokeSize2.png');
-    stroke3 = loadImage('images/strokeSize3.png');
-    strokeX = loadImage('images/strokeSize4.png');
-    file1 = loadImage('images/files1.png');
-    file2 = loadImage('images/files2.png');
-    file3 = loadImage('images/files3.png');
-    fileX = loadImage('images/files4.png');
-    eyedrop1 = loadImage('images/eyedrop1.png');
-    eyedrop2 = loadImage('images/eyedrop2.png');
-    eyedropX = loadImage('images/eyedrop2.png');
+    paulPics = [loadImage('images/painting/Paul1.png'), 
+            loadImage('images/painting/Paul2.png'),
+            loadImage('images/painting/Paul3.png')];
+    paletteChip = loadImage('images/painting/paintChip.png');
+    paletteSelect = loadImage('images/painting/paintSets.png');
+    backChecker = loadImage('images/painting/backChecker.png');
+    //backChecker = loadImage('images/painting/paintChip2.png');
+    paulLogo = loadImage('images/painting/paulPage.png');
+    paulLogo2 = loadImage('images/painting/paulPage2.png');
+    stroke1 = loadImage('images/painting/strokeSize1.png');
+    stroke2 = loadImage('images/painting/strokeSize2.png');
+    stroke3 = loadImage('images/painting/strokeSize3.png');
+    strokeX = loadImage('images/painting/strokeSize4.png');
+    file1 = loadImage('images/painting/files1.png');
+    file2 = loadImage('images/painting/files2.png');
+    file3 = loadImage('images/painting/files5.png');
+    fileX = loadImage('images/painting/files4.png');
+    eyedrop1 = loadImage('images/painting/eyedrop1.png');
+    eyedrop2 = loadImage('images/painting/eyedrop2.png');
+    eyedropX = loadImage('images/painting/eyedrop2.png');
   }
 
 function setup() {
@@ -161,12 +161,13 @@ function spawnPaulAd() {
 function resetCanvas() {
 
     // Determine minimum sizing
+    var borderOffset = 18;
 
-    canvWidth = max(windowWidth,paulLogo.width + padding + logoOffset) //- padding * 2;
+    canvWidth = max(windowWidth -borderOffset,paulLogo.width + padding + logoOffset) //- padding * 2;
     try {
-        canvHeight = max(windowHeight,paintTools.bottom) //- padding * 2 - paintBarHeight;
+        canvHeight = max(windowHeight -borderOffset,paintTools.bottom) //- padding * 2 - paintBarHeight;
     } catch {
-        canvHeight = windowHeight;
+        canvHeight = windowHeight -borderOffset;
     }
     
     resizeCanvas(canvWidth, canvHeight);

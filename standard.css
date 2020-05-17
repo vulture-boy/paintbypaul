@@ -1,28 +1,50 @@
-body{
-    background-color: rgb(255, 238, 250);
-    font-family: JoyfulTheatre;
+p{
+    font-family: park-lane;
 }
 
 a{
+    font-family: park-lane;
+
+}
+
+body{
+    background-color: rgb(255, 238, 250);
+}
+
+a:visited,
+a:link{
     text-decoration: none;
-    color: rgb(226, 7, 255);
+    color: rgb(85, 92, 97);
+}
+
+a:active,
+a:hover{
+    text-decoration: none;
+    color: rgb(206, 185, 69);
 }
 
 #menu {
-    font-family: DoublePlus;
+    font-family: loz-feliz;
+    color: rgb(76, 232, 243);
+    margin-left: 5%;
+}
+
+
+
+#menuContent{
+    position: absolute;
+    text-align: right;
+    top: 20%;
+}
+
+.centralImg{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
 }
 
 @font-face{
-    font-family: DoublePlus;
-    src: url(fonts/Doubleplus-6Yy4g.ttf);
-}
-
-@font-face{
-    font-family: PatrickHand;
-    src: url(fonts/PatrickHand-Regular.ttf);
-}
-
-@font-face{
-    font-family: JoyfulTheatre;
-    src: url(fonts/JoyfulTheatre-ODle.ttf);
+    font-family: SansSeriffic;
+    src: url(fonts/Sanseriffic-Jxlj.ttf);
 }

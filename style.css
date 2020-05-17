@@ -8,11 +8,13 @@ body {
     margin: 0;
     display: flex; 
     overflow-x: scroll;
+    overscroll-behavior: none;
 }
 
 h1 {
-    color: blue;
+    color: rgb(38, 194, 233);
     font-family: 'munroregular','Cutive Mono', monospace;
+    margin: 8px;
 }
 
 p {

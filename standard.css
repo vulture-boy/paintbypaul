@@ -1,12 +1,13 @@
-p, h1, h2, h3, h4, h5{
-    font-family: park-lane;
+p, h1, h2, h3, h4, h5, a{
+    
+    font-family: park-lane, sans-serif;
 }
 
-a{
-    font-family: park-lane;
+p{
 }
 
 body{
+
     background-color: rgb(255, 238, 250);
 }
 

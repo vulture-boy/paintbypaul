@@ -1,0 +1,28 @@
+body{
+    background-color: rgb(255, 238, 250);
+    font-family: JoyfulTheatre;
+}
+
+a{
+    text-decoration: none;
+    color: rgb(226, 7, 255);
+}
+
+#menu {
+    font-family: DoublePlus;
+}
+
+@font-face{
+    font-family: DoublePlus;
+    src: url(fonts/Doubleplus-6Yy4g.ttf);
+}
+
+@font-face{
+    font-family: PatrickHand;
+    src: url(fonts/PatrickHand-Regular.ttf);
+}
+
+@font-face{
+    font-family: JoyfulTheatre;
+    src: url(fonts/JoyfulTheatre-ODle.ttf);
+}

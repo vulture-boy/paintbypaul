@@ -11,6 +11,8 @@ var logoOffset = 32;
 var lerpDir = 0;
 var touchTimer = 0;
 var touchDelay = 500;
+var adDisplayTimer = 20000;
+var adDisplayReset = 25000;
 var topZ = 4; // lazy var to track z layer height
 var selectionPosition = [0,0]; // Position of selection icon
 let paintTools;
@@ -59,6 +61,9 @@ function draw() {
 
     paintTools.drawTools();
     paulText.drawMe();
+
+        // 
+        spawnPaulAd();
 
     // Drawing
     if (mouseIsPressed === true) { // Draw Action
@@ -139,6 +144,17 @@ function mouseReleased() {
     if (paintTools.eyedropButton.mode === 1 && mouseX > padding) {
         paintTools.eyedropButton.mode = 0;
     }
+}
+
+function spawnPaulAd() {
+    // Select ad to display
+    if (millis() - adDisplayTimer > adDisplayReset) {
+        // Open random popup window
+        var randomIndex = round(random(paintTools.popups.length - 1))
+        paintTools.popups[randomIndex].openWindow();
+
+        adDisplayTimer = millis();
+    } 
 }
 
 /// Re-adjusts canvas for modified dimensions (or initialization)
@@ -406,6 +422,11 @@ class PaintTools {
             file1.width, file1.height, file3, new Window95('projectPage')));
         var contentIconBottom = buttonBottom 
             + (space + file1.height) *3;
+
+        // Pop Ups
+        this.popups = [];
+        this.popups.push(new Window95('popup1'));
+        this.popups.push(new Window95('popup2'));
 
         // Determine bottom dimension
         this.bottom = space + contentIconBottom + 16;

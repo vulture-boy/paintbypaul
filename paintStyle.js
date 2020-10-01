@@ -17,7 +17,7 @@ var topZ = 4; // lazy var to track z layer height
 var selectionPosition = [0,0]; // Position of selection icon
 var notPainting = false;
 var themeColor = 0;
-var bgColors = ['#fff0ff', '#f3ffeb', '#FFDDDD']
+var bgColors = ['#fff0ff', '#f3ffeb', '#FFDDDD', '#defeff']
 let paintTools;
 
 function preload() {
@@ -32,6 +32,7 @@ function preload() {
     backChecker = loadImage('images/painting/backChecker.png');
     backChecker2 = loadImage('images/painting/backChecker2.png');
     backChecker3 = loadImage('images/painting/backChecker3.png');
+    backChecker4 = loadImage('images/painting/backChecker4.png');
     paulLogo = loadImage('images/painting/paulPage.png');
     paulLogo2 = loadImage('images/painting/paulPage2.png');
     stroke1 = loadImage('images/painting/strokeSize1.png');
@@ -57,9 +58,9 @@ function setup() {
     paulText = new PaulLogo();
 
     // Select Color theme
-    var totalThemes = 2
-    //themeColor = round(random(totalThemes))
-    themeColor = 0
+    var totalThemes = 3
+    themeColor = round(random(totalThemes))
+    //themeColor = 0
     document.body.style.backgroundColor = bgColors[themeColor];
 
     // Show key pages on load
@@ -77,6 +78,8 @@ function draw() {
                 image(backChecker2,i,j);
             } else if (themeColor == 2) {
                 image(backChecker3,i,j);
+            } else if (themeColor == 3) {
+                image(backChecker4,i,j);
             }
         }
     }

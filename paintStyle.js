@@ -15,17 +15,23 @@ var adDisplayTimer = 20000;
 var adDisplayReset = 25000;
 var topZ = 4; // lazy var to track z layer height
 var selectionPosition = [0,0]; // Position of selection icon
+var notPainting = false;
+var themeColor = 0;
+var bgColors = ['#ccfbff', '#f3ffeb', '#FFDDDD']
 let paintTools;
 
 function preload() {
 
     paulPics = [loadImage('images/painting/Paul1.png'), 
             loadImage('images/painting/Paul2.png'),
-            loadImage('images/painting/Paul3.png')];
+            loadImage('images/painting/Paul3.png'),
+            loadImage('images/painting/Paul4.png'),
+            loadImage('images/painting/Paul5.png')];
     paletteChip = loadImage('images/painting/paintChip.png');
     paletteSelect = loadImage('images/painting/paintSets.png');
     backChecker = loadImage('images/painting/backChecker.png');
-    //backChecker = loadImage('images/painting/paintChip2.png');
+    backChecker2 = loadImage('images/painting/backChecker2.png');
+    backChecker3 = loadImage('images/painting/backChecker3.png');
     paulLogo = loadImage('images/painting/paulPage.png');
     paulLogo2 = loadImage('images/painting/paulPage2.png');
     stroke1 = loadImage('images/painting/strokeSize1.png');
@@ -36,6 +42,7 @@ function preload() {
     file2 = loadImage('images/painting/files2.png');
     file3 = loadImage('images/painting/files5.png');
     fileX = loadImage('images/painting/files4.png');
+    plutoid = loadImage('images/resources/plutoid_sm.png');
     eyedrop1 = loadImage('images/painting/eyedrop1.png');
     eyedrop2 = loadImage('images/painting/eyedrop2.png');
     eyedropX = loadImage('images/painting/eyedrop2.png');
@@ -48,6 +55,15 @@ function setup() {
     paintTools = new PaintTools(padding/2 - paletteSelect.width/2, 16);
     resetCanvas(); 
     paulText = new PaulLogo();
+
+    // Select Color theme
+    var totalThemes = 2
+    //themeColor = round(random(totalThemes))
+    themeColor = 0
+    document.body.style.backgroundColor = bgColors[themeColor];
+
+    // Show key pages on load
+    paintTools.contentIcons[0].content.openWindow();
 }
 
 function draw() {
@@ -55,7 +71,13 @@ function draw() {
     // Padding Background 
     for (i=0;i<padding;i+=backChecker.width) {
         for (j=0;j<canvHeight;j+=backChecker.height) {
-            image(backChecker,i,j);
+            if (themeColor == 0) {
+                image(backChecker,i,j);
+            } else if (themeColor == 1) {
+                image(backChecker2,i,j);
+            } else if (themeColor == 2) {
+                image(backChecker3,i,j);
+            }
         }
     }
 
@@ -78,7 +100,12 @@ function draw() {
                 paintTools.paintSelect[2].color = pickedCol;
             }
         } else { // Drawing
-            sketch();
+
+            // Sketch if nothing else is pressed
+            if (!notPainting) {
+                sketch();
+            }
+
         }
     }
 }
@@ -116,18 +143,22 @@ function touchEnded() {
 }
 
 function mousePressed() {
-
     // Paint Tools 
-    paintTools.pointInsidePaintChip(mouseX,mouseY); // Paint Chips
+    notPainting = false;
+    notPainting = notPainting || paintTools.pointInsidePaintChip(mouseX,mouseY); // Paint Chips
     for (let i=0;i<paintTools.buttons.length;i++) {
         if (paintTools.buttons[i].pointInsideButton(mouseX,mouseY)) {
             paintTools.buttons[i].pushButton();
+            notPainting = true;
         }
     }
 
     for (let i=0;i<paintTools.contentIcons.length;i++) {
-        paintTools.contentIcons[i].openContent();
+        if (paintTools.contentIcons[i].openContent()) {
+            notPainting = true;
+        }
     }
+
 }
 
 function mouseReleased() {
@@ -175,12 +206,21 @@ function resetCanvas() {
 
     paintTools.adjustWindows();
 
-    // Add a silly picture of paul (random?)
     var newPaul = round(random(paulPics.length-1)) // Pick a random Paul
-    image(paulPics[newPaul], // Draw the Paul
-        windowWidth/3 - paulPics[newPaul].width/2 + random(windowWidth/3),
-        windowHeight/3 - paulPics[newPaul].height/2 + random(windowHeight/3));
+    drawPaul(newPaul, 1)
+    var newPaul2 = newPaul
+    while (newPaul == newPaul2) {
+        newPaul2 = round(random(paulPics.length-1))
+    }
+    drawPaul(newPaul2, 0.5)
 
+}
+
+function drawPaul(index, size) {
+    // Add a silly picture of paul (random?)
+    image(paulPics[index], // Draw the Paul
+        size * (windowWidth/3 - paulPics[index].width/2 + random(windowWidth/3)),
+        size * (windowHeight/3 - paulPics[index].height/2 + random(windowHeight/3)));
 }
 
 function windowResized() {
@@ -251,7 +291,9 @@ class ContentIcon extends ToolItem {
         // In box?
         if (withinRect(mouseX, mouseY, this.x, this.y, this.width, this.height)) {
             this.content.openWindow();
+            return true;
         }
+        return false;
     }
 
     jiggle() {
@@ -428,6 +470,8 @@ class PaintTools {
         this.popups = [];
         this.popups.push(new Window95('popup1'));
         this.popups.push(new Window95('popup2'));
+        this.popups.push(new Window95('popup3'));
+        this.popups.push(new Window95('popup4'));
 
         // Determine bottom dimension
         this.bottom = space + contentIconBottom + 16;
@@ -453,6 +497,7 @@ class PaintTools {
 
     pointInsidePaintChip(x,y) {
         // Paint Chips: Change Colour
+        var inChip = false;
         for (i=0;i<this.paintChips.length;i++) {
             if (withinRect(x,y,this.paintChips[i].x, this.paintChips[i].y, 
                 this.paintChips[i].width, this.paintChips[i].height)) {
@@ -463,8 +508,12 @@ class PaintTools {
                 if (mouseButton === RIGHT) {
                     this.paintSelect[1].changeColor(this.paintChips[i].color);
                 }
+
+                inChip = true;
             }
         }
+
+        return inChip;
     }
 
     jiggle() {

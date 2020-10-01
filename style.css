@@ -1,5 +1,5 @@
 body {
-    background-color: #FFDDDD;
+    background-color: #ececec; /* #FFDDDD */
     text-align: center;
     color: blue;
     font-family: 'Cutive Mono', monospace;
@@ -15,11 +15,30 @@ h1 {
     color: rgb(38, 194, 233);
     font-family: 'munroregular','Cutive Mono', monospace;
     margin: 8px;
+
+    -khtml-user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 p {
     text-align: left;
     margin: 8px;
+}
+
+img{
+    -khtml-user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+img::selection {
+    background-color: transparent;
+    color: #000;
 }
 
 .page {
@@ -31,7 +50,7 @@ p {
     align-self: center;
     background-color: white;
     max-width: 75%;
-    min-width: 300px;
+    min-width: 100px;
     height: auto;
     display: none;
     draggable: true;
@@ -63,8 +82,8 @@ p {
 }
 
 #projectPage {
-    left: 300px;
-    max-width: 720px;
+    left: 150px;
+    max-width: 400px;
 }
 
 @font-face {

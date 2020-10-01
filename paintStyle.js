@@ -17,7 +17,7 @@ var topZ = 4; // lazy var to track z layer height
 var selectionPosition = [0,0]; // Position of selection icon
 var notPainting = false;
 var themeColor = 0;
-var bgColors = ['#ccfbff', '#f3ffeb', '#FFDDDD']
+var bgColors = ['#fff0ff', '#f3ffeb', '#FFDDDD']
 let paintTools;
 
 function preload() {

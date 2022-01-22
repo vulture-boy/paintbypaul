@@ -1,7 +1,7 @@
 # Paint by Paul
 
 A non-profit commission project for Astrolope (Paul Geldart). The website was live on paintbypaul.xyz for about a year. 
-Art and code assets by yours truly, audio and photography by the musician.
+Art and code assets by yours truly, audio and photography by the musician. Uses the p5.js library. (https://p5js.org/)
 
 Overall design is reminiscent of MSPaint and 90's era internet. Enjoy the popups!
 

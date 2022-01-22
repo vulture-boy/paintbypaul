@@ -7,14 +7,14 @@ Overall design is reminiscent of MSPaint and 90's era internet. Enjoy the popups
 
 Experience is live at https://vulture-boy.github.io/paintbypaul/
 
-FONTS:
+## FONTS:
 Chequered Ink (used under license)
-Doubleplus - https://www.dafont.com/doubleplus.font
-Joyful Theatre - https://www.dafont.com/joyful-theatre.font
-Sanseriffic - https://www.dafont.com/sanseriffic.font
+- Doubleplus - https://www.dafont.com/doubleplus.font
+- Joyful Theatre - https://www.dafont.com/joyful-theatre.font
+- Sanseriffic - https://www.dafont.com/sanseriffic.font
 
 Patrick Wagesreiter
-Patrick Hand - https://www.1001fonts.com/patrick-hand-font.html
+- Patrick Hand - https://www.1001fonts.com/patrick-hand-font.html
 
 Ten by Twenty 
-Munro - https://webfonts.ffonts.net/Munro.font
+- Munro - https://webfonts.ffonts.net/Munro.font
